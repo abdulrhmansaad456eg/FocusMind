@@ -16,7 +16,9 @@
         {
           "icon": "./assets/notification-icon.png",
           "color": "#3b82f6",
-          "sounds": ["./assets/notification-sound.wav"]
+          "sounds": [
+            "./assets/notification-sound.wav"
+          ]
         }
       ]
     ],
@@ -33,7 +35,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.abdulrhmansaad.focusmind",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -47,12 +51,21 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
-        "SCHEDULE_EXACT_ALARM"
+        "SCHEDULE_EXACT_ALARM",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9b4383a4-62b5-43db-9c9e-6d2802ab1a09"
+      }
+    },
+    "owner": "abdulrhmansaad456eg"
   }
 }
