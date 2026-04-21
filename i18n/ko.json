@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "FocusMind"
+  },
+  "auth": {
+    "welcomeBack": "다시 오신 것을 환영합니다!",
+    "loginSubtitle": "집중 여정을 계속하려면 로그인하세요",
+    "signupSubtitle": "더 나은 습관을 만들기 위한 계정을 생성하세요",
+    "email": "이메일",
+    "password": "비밀번호",
+    "username": "사용자 이름",
+    "login": "로그인",
+    "signup": "계정 만들기",
+    "noAccount": "계정이 없으신가요? 가입하기",
+    "hasAccount": "이미 계정이 있으신가요? 로그인"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "save": "저장",
+    "cancel": "취소",
+    "confirm": "확인",
+    "delete": "삭제",
+    "edit": "편집",
+    "done": "완료",
+    "next": "다음",
+    "back": "뒤로",
+    "skip": "건너뛰기",
+    "continue": "계속"
+  },
+  "tabs": {
+    "home": "홈",
+    "focus": "집중",
+    "stats": "통계",
+    "shop": "상점",
+    "profile": "프로필"
+  },
+  "remi": {
+    "intro1": "안녕! 나는 레미야 👋",
+    "intro2": "만나서 반가워 — 내 이름 REMI-ember 해줘, 하하 😄",
+    "intro3": "...알았어, 그만할게.",
+    "intro4": "내 역할은 집중을 도와주고, 성과를 추적하고, 오늘이 의미 있도록 돕는 거야.",
+    "intro5": "공간을 설정할 준비 됐어?"
+  },
+  "onboarding": {
+    "step1Title": "무엇에 집중하고 싶나요?",
+    "step1Subtitle": "첫 번째 목표를 입력하세요",
+    "step2Title": "스트릭 만들기",
+    "step2Subtitle": "꾸준히 유지하고 스트릭이 성장하는 것을 지켜보세요!",
+    "step3Title": "연습 세션",
+    "step3Subtitle": "1분 집중 세션을 해보자",
+    "step4Title": "포커스 코인",
+    "step4Subtitle": "완료한 세션마다 코인을 획득하세요",
+    "step5Title": "스타일 선택",
+    "step5Subtitle": "당신의 스타일에 맞는 테마를 선택하세요",
+    "step6Title": "알림 받기",
+    "step6Subtitle": "스트릭을 유지하기 위해 알림을 허용하세요"
+  },
+  "focus": {
+    "startSession": "집중 세션 시작",
+    "sessionName": "무엇에 집중하고 있나요?",
+    "pomodoro": "뽀모도로",
+    "deepWork": "딥 워크",
+    "quickBurst": "퀵 버스트",
+    "windDown": "하루 마무리",
+    "ambientSounds": "배경 소리",
+    "rateProductivity": "집중력은 어땠나요?",
+    "addNote": "노트 추가 (선택)",
+    "coinsEarned": "획득한 코인",
+    "sessionComplete": "세션 완료!"
+  },
+  "stats": {
+    "totalHours": "총 시간",
+    "currentStreak": "현재 스트릭",
+    "longestStreak": "최장 스트릭",
+    "totalCoins": "총 코인",
+    "weeklySummary": "주간 요약",
+    "focusHeatmap": "집중 히트맵"
+  },
+  "shop": {
+    "title": "포커스 상점",
+    "remiSkins": "레미 스킨",
+    "streakShields": "스트릭 실드",
+    "timerSounds": "타이머 소리",
+    "themes": "특별 테마",
+    "badges": "프로필 배지",
+    "balance": "잔액"
+  },
+  "achievements": {
+    "title": "업적",
+    "firstFocus": "첫 집중",
+    "firstFocusDesc": "첫 번째 세션 완료",
+    "nightOwl": "올빼미",
+    "nightOwlDesc": "자정 이후 세션 완료",
+    "earlyBird": "일찍 일어난 새",
+    "earlyBirdDesc": "오전 7시 전 세션 완료",
+    "ironMind": "강철의 마음",
+    "ironMindDesc": "7일 스트릭 유지",
+    "monkMode": "수행 모드",
+    "monkModeDesc": "하루에 5개 세션 완료",
+    "silentGiant": "고요한 거인",
+    "silentGiantDesc": "총 100시간 집중",
+    "linguist": "언어학자",
+    "linguistDesc": "언어 3번 변경",
+    "completionist": "완벽주의자",
+    "completionistDesc": "온보딩 100% 완료"
+  },
+  "settings": {
+    "title": "설정",
+    "language": "언어",
+    "theme": "테마",
+    "notifications": "알림",
+    "haptics": "햅틱 피드백",
+    "soundEffects": "효과음",
+    "dataExport": "데이터보내기",
+    "deleteAccount": "계정 삭제"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "FocusMind"
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back!",
+    "loginSubtitle": "Sign in to continue your focus journey",
+    "signupSubtitle": "Create an account to start building better habits",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "login": "Sign In",
+    "signup": "Create Account",
+    "noAccount": "Don't have an account? Sign up",
+    "hasAccount": "Already have an account? Sign in"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "done": "Done",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "continue": "Continue"
+  },
+  "tabs": {
+    "home": "Home",
+    "focus": "Focus",
+    "stats": "Stats",
+    "shop": "Shop",
+    "profile": "Profile"
+  },
+  "remi": {
+    "intro1": "Hi! I'm Remi 👋",
+    "intro2": "Nice to meet you — hope you REMI-mber my name, haha 😄",
+    "intro3": "...okay okay, I'll stop.",
+    "intro4": "I'm here to help you focus, track your wins, and make sure today actually counts.",
+    "intro5": "Ready to set up your space?"
+  },
+  "onboarding": {
+    "step1Title": "What do you want to focus on?",
+    "step1Subtitle": "Type your first goal",
+    "step2Title": "Build Streaks",
+    "step2Subtitle": "Stay consistent and watch your streak grow!",
+    "step3Title": "Practice Session",
+    "step3Subtitle": "Let's try a quick 1-minute focus session",
+    "step4Title": "Focus Coins",
+    "step4Subtitle": "Earn coins for every session you complete",
+    "step5Title": "Pick Your Vibe",
+    "step5Subtitle": "Choose a theme that matches your style",
+    "step6Title": "Stay Notified",
+    "step6Subtitle": "Allow notifications to keep your streak alive"
+  },
+  "focus": {
+    "startSession": "Start Focus Session",
+    "sessionName": "What are you focusing on?",
+    "pomodoro": "Pomodoro",
+    "deepWork": "Deep Work",
+    "quickBurst": "Quick Burst",
+    "windDown": "Wind Down",
+    "ambientSounds": "Ambient Sounds",
+    "rateProductivity": "How was your focus?",
+    "addNote": "Add a note (optional)",
+    "coinsEarned": "Coins Earned",
+    "sessionComplete": "Session Complete!"
+  },
+  "stats": {
+    "totalHours": "Total Hours",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "totalCoins": "Total Coins",
+    "weeklySummary": "Weekly Summary",
+    "focusHeatmap": "Focus Heatmap"
+  },
+  "shop": {
+    "title": "Focus Shop",
+    "remiSkins": "Remi Skins",
+    "streakShields": "Streak Shields",
+    "timerSounds": "Timer Sounds",
+    "themes": "Exclusive Themes",
+    "badges": "Profile Badges",
+    "balance": "Balance"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "firstFocus": "First Focus",
+    "firstFocusDesc": "Complete your first session",
+    "nightOwl": "Night Owl",
+    "nightOwlDesc": "Complete a session after midnight",
+    "earlyBird": "Early Bird",
+    "earlyBirdDesc": "Complete a session before 7 AM",
+    "ironMind": "Iron Mind",
+    "ironMindDesc": "Maintain a 7-day streak",
+    "monkMode": "Monk Mode",
+    "monkModeDesc": "Complete 5 sessions in one day",
+    "silentGiant": "Silent Giant",
+    "silentGiantDesc": "Focus for 100 total hours",
+    "linguist": "Linguist",
+    "linguistDesc": "Switch languages 3 times",
+    "completionist": "Completionist",
+    "completionistDesc": "Finish onboarding 100%"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "haptics": "Haptic Feedback",
+    "soundEffects": "Sound Effects",
+    "dataExport": "Export Data",
+    "deleteAccount": "Delete Account"
+  }
+}

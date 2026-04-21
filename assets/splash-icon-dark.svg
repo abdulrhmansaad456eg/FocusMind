@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Splash Screen Icon (Dark Mode) for FocusMind -->
+  <rect width="1024" height="1024" fill="#0f172a"/>
+  
+  <defs>
+    <linearGradient id="gradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Logo Centered -->
+  <g transform="translate(512, 480)">
+    <!-- Remi Body -->
+    <ellipse cx="0" cy="0" rx="200" ry="180" fill="url(#gradDark)"/>
+    
+    <!-- Eyes -->
+    <ellipse cx="-70" cy="-40" rx="35" ry="40" fill="#f8fafc"/>
+    <ellipse cx="70" cy="-40" rx="35" ry="40" fill="#f8fafc"/>
+    
+    <!-- Blush -->
+    <ellipse cx="-130" cy="40" rx="35" ry="20" fill="#60a5fa" opacity="0.3"/>
+    <ellipse cx="130" cy="40" rx="35" ry="20" fill="#60a5fa" opacity="0.3"/>
+  </g>
+  
+  <!-- App Name -->
+  <text x="512" y="750" text-anchor="middle" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#f8fafc">
+    FocusMind
+  </text>
+  
+  <!-- Tagline -->
+  <text x="512" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" fill="#94a3b8">
+    Focus with Remi
+  </text>
+</svg>

@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "FocusMind"
+  },
+  "auth": {
+    "welcomeBack": "مرحباً بعودتك!",
+    "loginSubtitle": "سجل الدخول لمواصلة رحلة التركيز",
+    "signupSubtitle": "أنشئ حساباً لبدء بناء عادات أفضل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "username": "اسم المستخدم",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟ سجل الآن",
+    "hasAccount": "لديك حساب بالفعل؟ تسجيل الدخول"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "done": "تم",
+    "next": "التالي",
+    "back": "رجوع",
+    "skip": "تخطي",
+    "continue": "متابعة"
+  },
+  "tabs": {
+    "home": "الرئيسية",
+    "focus": "تركيز",
+    "stats": "الإحصائيات",
+    "shop": "المتجر",
+    "profile": "الملف الشخصي"
+  },
+  "remi": {
+    "intro1": "مرحباً! أنا ريمي 👋",
+    "intro2": "تشرفت بلقائك — آمل أن تتذكر REMI اسمي، ههه 😄",
+    "intro3": "...حسناً، سأتوقف.",
+    "intro4": "أنا هنا لمساعدتك على التركيز، وتتبع إنجازاتك، والتأكد من أن اليوم يهم فعلاً.",
+    "intro5": "مستعد لإعداد مساحتك؟"
+  },
+  "onboarding": {
+    "step1Title": "على ماذا تريد التركيز؟",
+    "step1Subtitle": "اكتب هدفك الأول",
+    "step2Title": "ابنِ سلاسلك",
+    "step2Subtitle": "ابقَ متسقاً وشاهد سلسلتك تنمو!",
+    "step3Title": "جلسة تدريب",
+    "step3Subtitle": "لنجرب جلسة تركيز سريعة لمدة دقيقة",
+    "step4Title": "عملات التركيز",
+    "step4Subtitle": "اكسب عملات مقابل كل جلسة تكملها",
+    "step5Title": "اختر أسلوبك",
+    "step5Subtitle": "اختر سمة تتناسب مع أسلوبك",
+    "step6Title": "ابقَ على اطلاع",
+    "step6Subtitle": "اسمح بالإشعارات للحفاظ على سلسلتك"
+  },
+  "focus": {
+    "startSession": "بدء جلسة التركيز",
+    "sessionName": "على ماذا تركز؟",
+    "pomodoro": "بومودورو",
+    "deepWork": "عمل عميق",
+    "quickBurst": "انفجار سريع",
+    "windDown": "الاسترخاء",
+    "ambientSounds": "الأصوات المحيطة",
+    "rateProductivity": "كيف كان تركيزك؟",
+    "addNote": "أضف ملاحظة (اختياري)",
+    "coinsEarned": "العملات المكتسبة",
+    "sessionComplete": "اكتملت الجلسة!"
+  },
+  "stats": {
+    "totalHours": "إجمالي الساعات",
+    "currentStreak": "السلسلة الحالية",
+    "longestStreak": "أطول سلسلة",
+    "totalCoins": "إجمالي العملات",
+    "weeklySummary": "الملخص الأسبوعي",
+    "focusHeatmap": "خريطة التركيز"
+  },
+  "shop": {
+    "title": "متجر التركيز",
+    "remiSkins": "مظاهر ريمي",
+    "streakShields": "دروع السلسلة",
+    "timerSounds": "أصوات المؤقت",
+    "themes": "سمات حصرية",
+    "badges": "شارات الملف الشخصي",
+    "balance": "الرصيد"
+  },
+  "achievements": {
+    "title": "الإنجازات",
+    "firstFocus": "أول تركيز",
+    "firstFocusDesc": "أكمل أول جلسة",
+    "nightOwl": "بوم الليل",
+    "nightOwlDesc": "أكمل جلسة بعد منتصف الليل",
+    "earlyBird": "طائر مبكر",
+    "earlyBirdDesc": "أكمل جلسة قبل الساعة 7 صباحاً",
+    "ironMind": "عقل حديدي",
+    "ironMindDesc": "حافظ على سلسلة 7 أيام",
+    "monkMode": "وضع الراهب",
+    "monkModeDesc": "أكمل 5 جلسات في يوم واحد",
+    "silentGiant": "عملاق صامت",
+    "silentGiantDesc": "ركز لـ 100 ساعة إجمالية",
+    "linguist": "لغوي",
+    "linguistDesc": "بدل اللغة 3 مرات",
+    "completionist": "مكمل",
+    "completionistDesc": "أكمل التهيئة 100%"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "theme": "السمة",
+    "notifications": "الإشعارات",
+    "haptics": "الملاحظات اللمسية",
+    "soundEffects": "المؤثرات الصوتية",
+    "dataExport": "تصدير البيانات",
+    "deleteAccount": "حذف الحساب"
+  }
+}

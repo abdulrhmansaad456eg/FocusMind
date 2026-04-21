@@ -1,0 +1,58 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build APK
+        run: |
+          eas build --platform android --profile ${{ github.event.inputs.build_type || 'preview' }} --non-interactive --output build.apk
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: focusmind-apk-${{ github.run_number }}
+          path: build.apk
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Get APK URL
+        if: success()
+        run: |
+          echo "✅ APK Build Complete!"
+          echo "Download the APK from the Artifacts section above."
+          echo "Build Number: ${{ github.run_number }}"
