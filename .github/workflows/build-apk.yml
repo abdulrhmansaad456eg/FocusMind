@@ -38,17 +38,16 @@ jobs:
 
       - name: Build APK
         run: |
-          eas build --platform android --profile ${{ github.event.inputs.build_type || 'preview' }} --non-interactive --output build.apk
+          eas build --platform android --profile ${{ github.event.inputs.build_type || 'preview' }} --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: focusmind-apk-${{ github.run_number }}
-          path: build.apk
-          if-no-files-found: warn
-          retention-days: 30
+      - name: Get Build URL
+        if: success()
+        run: |
+          echo "✅ APK Build Submitted to EAS!"
+          echo "Monitor build at: https://expo.dev/accounts/abdulrhmansaad456eg/projects/FocusMind/builds"
+          echo "Build Number: ${{ github.run_number }}"
 
       - name: Get APK URL
         if: success()
