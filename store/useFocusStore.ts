@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface FocusSession {
   id: string;
@@ -36,9 +34,7 @@ const calculateCoins = (duration: number, streakMultiplier: number = 1): number 
   return Math.floor(baseCoins * streakMultiplier);
 };
 
-export const useFocusStore = create<FocusState>()(
-  persist(
-    (set, get) => ({
+export const useFocusStore = create<FocusState>((set, get) => ({
       sessions: [],
       currentSession: null,
       isActive: false,
@@ -121,11 +117,4 @@ export const useFocusStore = create<FocusState>()(
         const totalMinutes = sessions.reduce((sum, s) => sum + s.duration, 0);
         return Math.floor(totalMinutes / 60);
       },
-    }),
-    {
-      name: '@focusmind_focus',
-      storage: createJSONStorage(() => AsyncStorage),
-      skipHydration: true,
-    }
-  )
-);
+}));

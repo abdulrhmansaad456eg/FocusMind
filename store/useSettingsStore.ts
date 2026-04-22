@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface SettingsState {
   // Session defaults
@@ -28,9 +26,7 @@ interface SettingsState {
   toggleWeeklySummary: () => void;
 }
 
-export const useSettingsStore = create<SettingsState>()(
-  persist(
-    (set, get) => ({
+export const useSettingsStore = create<SettingsState>((set, get) => ({
       defaultSessionType: 'pomodoro',
       defaultPomodoroDuration: 25,
       defaultAmbientSound: null,
@@ -49,11 +45,4 @@ export const useSettingsStore = create<SettingsState>()(
       toggleSessionReminders: () => set({ sessionRemindersEnabled: !get().sessionRemindersEnabled }),
       toggleStreakWarnings: () => set({ streakWarningsEnabled: !get().streakWarningsEnabled }),
       toggleWeeklySummary: () => set({ weeklySummaryEnabled: !get().weeklySummaryEnabled }),
-    }),
-    {
-      name: '@focusmind_settings',
-      storage: createJSONStorage(() => AsyncStorage),
-      skipHydration: true,
-    }
-  )
-);
+}));

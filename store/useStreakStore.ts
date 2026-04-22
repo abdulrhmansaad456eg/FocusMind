@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface StreakState {
   currentStreak: number;
@@ -18,9 +16,7 @@ interface StreakState {
 
 const MILESTONES = [3, 7, 14, 30, 60, 100];
 
-export const useStreakStore = create<StreakState>()(
-  persist(
-    (set, get) => ({
+export const useStreakStore = create<StreakState>((set, get) => ({
       currentStreak: 0,
       longestStreak: 0,
       lastActiveDate: null,
@@ -93,11 +89,4 @@ export const useStreakStore = create<StreakState>()(
           minutes: Math.floor(Math.random() * 120),
         }));
       },
-    }),
-    {
-      name: '@focusmind_streak',
-      storage: createJSONStorage(() => AsyncStorage),
-      skipHydration: true,
-    }
-  )
-);
+}));

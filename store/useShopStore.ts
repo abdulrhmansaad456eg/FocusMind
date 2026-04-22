@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface ShopItem {
   id: string;
@@ -50,9 +48,7 @@ const DEFAULT_ITEMS: ShopItem[] = [
   { id: 'shield_1', name: 'Streak Shield', description: 'Protect your streak', price: 200, type: 'streakShield', icon: 'Shield', owned: false },
 ];
 
-export const useShopStore = create<ShopState>()(
-  persist(
-    (set, get) => ({
+export const useShopStore = create<ShopState>((set, get) => ({
       items: DEFAULT_ITEMS,
       purchasedItems: ['remi_blue'],
       equippedItems: {
@@ -107,11 +103,4 @@ export const useShopStore = create<ShopState>()(
         const { equippedItems } = get();
         return Object.values(equippedItems).includes(itemId);
       },
-    }),
-    {
-      name: '@focusmind_shop',
-      storage: createJSONStorage(() => AsyncStorage),
-      skipHydration: true,
-    }
-  )
-);
+}));

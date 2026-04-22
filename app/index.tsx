@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../store/useAuthStore';
@@ -6,23 +6,45 @@ import { useAuthStore } from '../store/useAuthStore';
 export default function SplashScreen() {
   const router = useRouter();
   const { setUser } = useAuthStore();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Auto-login as guest
-    setUser({
-      id: 'guest',
-      email: 'guest@focusmind.app',
-      username: 'Guest',
-      avatarColor: '#3b82f6',
-    });
+    try {
+      // Auto-login as guest
+      setUser({
+        id: 'guest',
+        email: 'guest@focusmind.app',
+        username: 'Guest',
+        avatarColor: '#3b82f6',
+      });
 
-    // Navigate to home after 2 seconds
-    const timer = setTimeout(() => {
-      router.replace('/(tabs)/home');
-    }, 2000);
+      // Navigate to home after 2 seconds
+      const timer = setTimeout(() => {
+        try {
+          router.replace('/(tabs)/home');
+        } catch (navError) {
+          console.error('Navigation error:', navError);
+          setError('Navigation failed');
+        }
+      }, 2000);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    } catch (err) {
+      console.error('Splash init error:', err);
+      setError('Failed to initialize');
+    }
   }, []);
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.logo}>⚠️</Text>
+        <Text style={styles.title}>Oops!</Text>
+        <Text style={styles.welcome}>{error}</Text>
+        <Text style={styles.subtitle}>Please restart the app</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -70,5 +92,10 @@ const styles = StyleSheet.create({
   },
   loader: {
     marginTop: 20,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#94a3b8',
+    marginTop: 10,
   },
 });
