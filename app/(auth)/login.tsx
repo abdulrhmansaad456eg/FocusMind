@@ -15,9 +15,13 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    const success = await login(email, password);
-    if (success) {
-      router.replace('/(tabs)/home');
+    try {
+      const success = await login(email, password);
+      if (success) {
+        router.replace('/(tabs)/home');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
     }
   };
 

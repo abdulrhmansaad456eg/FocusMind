@@ -89,10 +89,8 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          // Simulate API call
           await new Promise(resolve => setTimeout(resolve, 1000));
           
-          // Validate credentials
           const account = await validateLogin(email, password);
           
           if (!account) {
@@ -119,10 +117,8 @@ export const useAuthStore = create<AuthState>()(
       signup: async (email: string, password: string, username: string) => {
         set({ isLoading: true, error: null });
         try {
-          // Simulate API call
           await new Promise(resolve => setTimeout(resolve, 1000));
           
-          // Add new test account
           const added = await addTestAccount(email, password, username);
           
           if (!added) {
@@ -164,6 +160,12 @@ export const useAuthStore = create<AuthState>()(
     {
       name: '@focusmind_auth',
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ 
+        user: state.user, 
+        hasCompletedOnboarding: state.hasCompletedOnboarding 
+      }),
+      skipHydration: true,
     }
   )
 );
+
