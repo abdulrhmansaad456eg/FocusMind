@@ -125,6 +125,7 @@ export const useFocusStore = create<FocusState>()(
     {
       name: '@focusmind_focus',
       storage: createJSONStorage(() => AsyncStorage),
+      skipHydration: true,
     }
   )
 );

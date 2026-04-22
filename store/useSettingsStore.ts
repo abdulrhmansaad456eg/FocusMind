@@ -53,6 +53,7 @@ export const useSettingsStore = create<SettingsState>()(
     {
       name: '@focusmind_settings',
       storage: createJSONStorage(() => AsyncStorage),
+      skipHydration: true,
     }
   )
 );

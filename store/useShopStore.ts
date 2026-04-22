@@ -111,6 +111,7 @@ export const useShopStore = create<ShopState>()(
     {
       name: '@focusmind_shop',
       storage: createJSONStorage(() => AsyncStorage),
+      skipHydration: true,
     }
   )
 );

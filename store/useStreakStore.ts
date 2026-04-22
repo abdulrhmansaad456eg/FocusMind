@@ -97,6 +97,7 @@ export const useStreakStore = create<StreakState>()(
     {
       name: '@focusmind_streak',
       storage: createJSONStorage(() => AsyncStorage),
+      skipHydration: true,
     }
   )
 );
