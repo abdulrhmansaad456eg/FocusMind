@@ -18,6 +18,7 @@ interface AuthState {
   logout: () => void;
   setOnboardingComplete: () => void;
   updateProfile: (updates: Partial<User>) => void;
+  setUser: (user: User) => void;
 }
 
 // Test account - hardcoded to avoid storage issues
@@ -95,6 +96,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (user) {
       set({ user: { ...user, ...updates } });
     }
+  },
+
+  setUser: (user: User) => {
+    set({ user, hasCompletedOnboarding: true });
   },
 }));
 
