@@ -8,6 +8,7 @@ function mapFirebaseUser(fu: FirebaseUser): User {
     email: fu.email ?? '',
     username: fu.displayName?.trim() || fu.email?.split('@')[0] || 'FocusMind',
     avatarColor: '#6366f1',
+    emailVerified: fu.emailVerified,
   };
 }
 

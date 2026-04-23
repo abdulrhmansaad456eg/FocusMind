@@ -1,5 +1,5 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +9,28 @@ export default function Login() {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const router = useRouter();
-  const { login, isLoading, error } = useAuthStore();
+  const { login, isLoading, error, needsVerification, clearError, googleLogin } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    if (needsVerification) {
+      router.push('/(auth)/verify-email');
+    }
+  }, [needsVerification, router]);
+
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      return;
+    }
     try {
       const success = await login(email, password);
       if (success) {
@@ -22,6 +38,22 @@ export default function Login() {
       }
     } catch (err) {
       console.error('Login error:', err);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      // Google Sign-In requires @react-native-google-signin/google-signin package
+      // and proper Firebase OAuth configuration
+      // For now, show setup instructions
+      Alert.alert(
+        'Google Sign-In Setup Required',
+        'To enable Google Sign-In:\n\n1. Add EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID to your .env\n2. Install: npx expo install @react-native-google-signin/google-signin\n3. Configure OAuth in Firebase Console\n4. Rebuild the app',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -74,6 +106,38 @@ export default function Login() {
         </Text>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={[styles.googleButton, { borderColor: theme.colors.border }]}
+        onPress={handleGoogleSignIn}
+        disabled={googleLoading || isLoading}
+        testID="google-login-button"
+      >
+        {googleLoading ? (
+          <ActivityIndicator color={theme.colors.text} />
+        ) : (
+          <>
+            <Text style={[styles.googleIcon]}>G</Text>
+            <Text style={[styles.googleButtonText, { color: theme.colors.text }]}>
+              {t('auth.continueWithGoogle')}
+            </Text>
+          </>
+        )}
+      </TouchableOpacity>
+
+      <View style={styles.divider}>
+        <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
+        <Text style={[styles.dividerText, { color: theme.colors.textSecondary }]}>
+          {t('auth.or')}
+        </Text>
+        <View style={[styles.dividerLine, { backgroundColor: theme.colors.border }]} />
+      </View>
+
+      <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
+        <Text style={[styles.link, { color: theme.colors.textSecondary }]}>
+          {t('auth.forgotPassword')}
+        </Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
         <Text style={[styles.link, { color: theme.colors.primary }]}>
           {t('auth.noAccount')}
@@ -118,7 +182,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   link: {
-    marginTop: 24,
+    marginTop: 16,
     textAlign: 'center',
     fontSize: 14,
   },
@@ -126,5 +190,37 @@ const styles = StyleSheet.create({
     color: '#ef4444',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  googleButton: {
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 12,
+  },
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4285F4',
+  },
+  googleButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+    gap: 12,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+  dividerText: {
+    fontSize: 14,
   },
 });

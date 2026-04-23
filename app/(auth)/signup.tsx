@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
@@ -9,18 +9,34 @@ export default function Signup() {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const router = useRouter();
-  const { signup, isLoading, error } = useAuthStore();
+  const { signup, isLoading, error, needsVerification, clearError } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
 
+  useEffect(() => {
+    if (needsVerification) {
+      router.push('/(auth)/verify-email');
+    }
+  }, [needsVerification, router]);
+
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
+
   const handleSignup = async () => {
+    if (!email || !password || !username) {
+      return;
+    }
     try {
       const success = await signup(email, password, username);
       if (success) {
         router.replace('/(tabs)/home');
       }
+      // If success is false but no error, verification email was sent
     } catch (err) {
       console.error('Signup error:', err);
     }
@@ -93,6 +109,10 @@ export default function Signup() {
           {t('auth.hasAccount')}
         </Text>
       </TouchableOpacity>
+
+      <Text style={[styles.termsText, { color: theme.colors.textSecondary }]}>
+        {t('auth.termsAgreement')}
+      </Text>
     </View>
   );
 }
@@ -140,5 +160,10 @@ const styles = StyleSheet.create({
     color: '#ef4444',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  termsText: {
+    marginTop: 24,
+    textAlign: 'center',
+    fontSize: 12,
   },
 });
