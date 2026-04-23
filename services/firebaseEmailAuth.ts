@@ -3,16 +3,15 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  sendEmailVerification,
   sendPasswordResetEmail,
-  verifyBeforeUpdateEmail,
   GoogleAuthProvider,
   signInWithCredential,
   type User,
 } from 'firebase/auth';
-import { doc, serverTimestamp, setDoc, getDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 import { getFirebaseAuth, getFirebaseFirestore } from './firebase';
+import { createVerificationCode, verifyCode, clearVerificationCode } from './verificationCodeService';
 
 export function mapFirebaseAuthError(err: unknown): string {
   if (err instanceof FirebaseError) {
@@ -100,28 +99,48 @@ export async function emailPasswordSignIn(email: string, password: string): Prom
   }
 }
 
+export async function checkUsernameExists(username: string): Promise<boolean> {
+  const db = getFirebaseFirestore();
+  if (!db) {
+    // Development fallback
+    return false;
+  }
+
+  const usersRef = collection(db, 'users');
+  const q = query(usersRef, where('username', '==', username.toLowerCase().trim()));
+  const snapshot = await getDocs(q);
+  return !snapshot.empty;
+}
+
 export async function emailPasswordSignUp(
   email: string,
   password: string,
   username: string,
-): Promise<User> {
+): Promise<{ user: User; verificationCode: string }> {
   const firebaseAuth = getFirebaseAuth();
   const db = getFirebaseFirestore();
   if (!firebaseAuth) {
     throw new Error('Firebase Auth is not configured');
   }
+
+  // Check if username already exists
+  const usernameExists = await checkUsernameExists(username);
+  if (usernameExists) {
+    throw new Error('USERNAME_TAKEN');
+  }
+
   const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
   await updateProfile(cred.user, { displayName: username.trim() || username });
 
-  // Send verification email immediately
-  await sendEmailVerification(cred.user);
+  // Generate 6-digit verification code
+  const verificationCode = await createVerificationCode(email);
 
   if (db) {
     await setDoc(
       doc(db, 'users', cred.user.uid),
       {
-        username: username.trim(),
-        email,
+        username: username.trim().toLowerCase(),
+        email: email.toLowerCase(),
         avatarColor: '#6366f1',
         emailVerified: false,
         createdAt: serverTimestamp(),
@@ -130,11 +149,31 @@ export async function emailPasswordSignUp(
     );
   }
 
-  return cred.user;
+  return { user: cred.user, verificationCode };
 }
 
-export async function resendVerificationEmail(user: User): Promise<void> {
-  await sendEmailVerification(user);
+export async function verifyEmailCode(email: string, code: string): Promise<boolean> {
+  return await verifyCode(email, code);
+}
+
+export async function resendVerificationCode(email: string): Promise<string> {
+  return await createVerificationCode(email);
+}
+
+export async function markUserAsVerified(userId: string): Promise<void> {
+  const db = getFirebaseFirestore();
+  if (!db) {
+    return;
+  }
+
+  await setDoc(
+    doc(db, 'users', userId),
+    {
+      emailVerified: true,
+      verifiedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
 }
 
 export async function sendPasswordReset(email: string): Promise<void> {

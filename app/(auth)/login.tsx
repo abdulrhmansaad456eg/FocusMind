@@ -64,6 +64,11 @@ export default function Login() {
         {t('auth.loginSubtitle')}
       </Text>
 
+      {/* Remi Welcome Message */}
+      <Text style={[styles.remiText, { color: theme.colors.textSecondary }]}>
+        {t('remi.welcomeLogin')}
+      </Text>
+
       {error && <Text style={styles.error}>{error}</Text>}
 
       <TextInput
@@ -190,6 +195,12 @@ const styles = StyleSheet.create({
     color: '#ef4444',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  remiText: {
+    fontSize: 14,
+    marginBottom: 24,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   googleButton: {
     height: 48,

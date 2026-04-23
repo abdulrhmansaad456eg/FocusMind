@@ -32,7 +32,13 @@
     "resendIn": "إعادة الإرسال خلال {{seconds}} ثانية",
     "spamFolderTip": "لم تستلمه؟ تحقق من مجلد الرسائل غير المرغوب فيها أو حاول إعادة الإرسال.",
     "useDifferentEmail": "استخدام بريد إلكتروني مختلف",
-    "tooManyAttempts": "محاولات فاشلة كثيرة. حاول مرة أخرى بعد {{minutes}} دقيقة."
+    "tooManyAttempts": "محاولات فاشلة كثيرة. حاول مرة أخرى بعد {{minutes}} دقيقة.",
+    "passwordRequirements": "يجب أن تحتوي كلمة المرور على:",
+    "reqLength": "8+ أحرف",
+    "reqUppercase": "حرف كبير واحد",
+    "reqLowercase": "حرف صغير واحد",
+    "reqNumber": "رقم واحد",
+    "reqSpecial": "رمز خاص واحد"
   },
   "common": {
     "loading": "جاري التحميل...",
@@ -54,12 +60,25 @@
     "shop": "المتجر",
     "profile": "الملف الشخصي"
   },
+  "home": {
+    "goodToSeeYou": "سعدت برؤيتك",
+    "minutesToday": "الدقائق اليوم",
+    "totalHours": "إجمالي الساعات",
+    "todaysSessions": "جلسات اليوم",
+    "noSessionsToday": "لا توجد جلسات بعد. ابدأ أول جلسة تركيز!",
+    "readyToFocus": "مستعد للتركيز؟ اختر نوع الجلسة للبدء",
+    "startFocusing": "ابدأ التركيز",
+    "logout": "تسجيل الخروج"
+  },
   "remi": {
-    "intro1": "مرحباً! أنا ريمي 👋",
-    "intro2": "تشرفت بلقائك — آمل أن تتذكر REMI اسمي، ههه 😄",
+    "intro1": "مرحباً! أنا ريمي",
+    "intro2": "تشرفت بلقائك — آمل أن تتذكر REMI اسمي، ههه",
     "intro3": "...حسناً، سأتوقف.",
     "intro4": "أنا هنا لمساعدتك على التركيز، وتتبع إنجازاتك، والتأكد من أن اليوم يهم فعلاً.",
-    "intro5": "مستعد لإعداد مساحتك؟"
+    "intro5": "مستعد لإعداد مساحتك؟",
+    "welcomeBack": "مرحباً بعودتك! مستعد للتركيز؟",
+    "welcomeSignup": "مرحباً! أنا ريمي. دعنا ننشئ حسابك!",
+    "welcomeLogin": "مرحباً بعودتك! لنستمر في رحلتك."
   },
   "onboarding": {
     "step1Title": "على ماذا تريد التركيز؟",
@@ -147,7 +166,27 @@
     "timerSounds": "أصوات المؤقت",
     "themes": "سمات حصرية",
     "badges": "شارات الملف الشخصي",
-    "balance": "الرصيد"
+    "balance": "الرصيد",
+    "items": {
+      "classicBlue": "أزرق كلاسيكي",
+      "classicBlueDesc": "ريمي الأصلي",
+      "sakuraPink": "وردي ساكورا",
+      "sakuraPinkDesc": "ناعم وجميل",
+      "goldenGlow": "توهج ذهبي",
+      "goldenGlowDesc": "تألق بسطوع",
+      "gentleBell": "جرس لطيف",
+      "gentleBellDesc": "رنين خفيف",
+      "tibetanGong": "جرس تبيتي",
+      "tibetanGongDesc": "صدى عميق",
+      "sunsetVibes": "أجواء الغروب",
+      "sunsetVibesDesc": "تدرجات دافئة",
+      "matchaCalm": "هدوء الماتشا",
+      "matchaCalmDesc": "أخضر زن",
+      "starCollector": "جامع النجوم",
+      "starCollectorDesc": "شارة لامعة",
+      "streakShield": "درع السلسلة",
+      "streakShieldDesc": "احم سلسلتك"
+    }
   },
   "achievements": {
     "title": "الإنجازات",
@@ -176,6 +215,23 @@
     "haptics": "الملاحظات اللمسية",
     "soundEffects": "المؤثرات الصوتية",
     "dataExport": "تصدير البيانات",
-    "deleteAccount": "حذف الحساب"
+    "deleteAccount": "حذف الحساب",
+    "testHaptics": "اختبار الاهتزاز",
+    "testSounds": "اختبار الصوت",
+    "testNotifications": "إرسال إشعار تجريبي",
+    "hapticsOn": "الملاحظات اللمسية مفعلة - اشعر بالتغذية الراجعة!",
+    "hapticsOff": "الملاحظات اللمسية معطلة",
+    "soundsOn": "المؤثرات الصوتية مفعلة",
+    "soundsOff": "المؤثرات الصوتية معطلة",
+    "notificationsOn": "الإشعارات مفعلة",
+    "notificationsOff": "الإشعارات معطلة"
+  },
+  "validation": {
+    "usernameTaken": "اسم المستخدم هذا مستخدم بالفعل. يرجى اختيار اسم آخر.",
+    "emailInvalid": "الرجاء إدخال عنوان بريد إلكتروني صالح",
+    "passwordWeak": "يجب أن تحتوي كلمة المرور على: 8+ أحرف، حرف كبير، رقم، رمز خاص",
+    "codeSent": "تم إرسال الرمز! تحقق من بريدك الإلكتروني (ومجلد الرسائل غير المرغوب فيها).",
+    "verificationSuccess": "تم التحقق من البريد الإلكتروني بنجاح!",
+    "verificationError": "رمز غير صالح. يرجى المحاولة مرة أخرى."
   }
 }

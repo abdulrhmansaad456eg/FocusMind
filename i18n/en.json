@@ -32,7 +32,13 @@
     "resendIn": "Resend in {{seconds}}s",
     "spamFolderTip": "Didn't receive it? Check your spam folder or try resending.",
     "useDifferentEmail": "Use a different email",
-    "tooManyAttempts": "Too many failed attempts. Try again in {{minutes}} minutes."
+    "tooManyAttempts": "Too many failed attempts. Try again in {{minutes}} minutes.",
+    "passwordRequirements": "Password must contain:",
+    "reqLength": "8+ characters",
+    "reqUppercase": "One uppercase letter",
+    "reqLowercase": "One lowercase letter",
+    "reqNumber": "One number",
+    "reqSpecial": "One special character"
   },
   "common": {
     "loading": "Loading...",
@@ -54,12 +60,25 @@
     "shop": "Shop",
     "profile": "Profile"
   },
+  "home": {
+    "goodToSeeYou": "Good to see you",
+    "minutesToday": "Minutes today",
+    "totalHours": "Total hours",
+    "todaysSessions": "Today's sessions",
+    "noSessionsToday": "No sessions yet today. Start your first focus session!",
+    "readyToFocus": "Ready to focus? Choose a session type to begin",
+    "startFocusing": "Start Focusing",
+    "logout": "Log out"
+  },
   "remi": {
-    "intro1": "Hi! I'm Remi 👋",
-    "intro2": "Nice to meet you — hope you REMI-mber my name, haha 😄",
+    "intro1": "Hi! I'm Remi",
+    "intro2": "Nice to meet you — hope you REMI-mber my name, haha",
     "intro3": "...okay okay, I'll stop.",
     "intro4": "I'm here to help you focus, track your wins, and make sure today actually counts.",
-    "intro5": "Ready to set up your space?"
+    "intro5": "Ready to set up your space?",
+    "welcomeBack": "Welcome back! Ready to focus?",
+    "welcomeSignup": "Hi! I'm Remi. Let's create your account!",
+    "welcomeLogin": "Welcome back! Let's continue your journey."
   },
   "onboarding": {
     "step1Title": "What do you want to focus on?",
@@ -147,7 +166,27 @@
     "timerSounds": "Timer Sounds",
     "themes": "Exclusive Themes",
     "badges": "Profile Badges",
-    "balance": "Balance"
+    "balance": "Balance",
+    "items": {
+      "classicBlue": "Classic Blue",
+      "classicBlueDesc": "The original Remi",
+      "sakuraPink": "Sakura Pink",
+      "sakuraPinkDesc": "Soft and lovely",
+      "goldenGlow": "Golden Glow",
+      "goldenGlowDesc": "Shine bright",
+      "gentleBell": "Gentle Bell",
+      "gentleBellDesc": "Soft chime",
+      "tibetanGong": "Tibetan Gong",
+      "tibetanGongDesc": "Deep resonance",
+      "sunsetVibes": "Sunset Vibes",
+      "sunsetVibesDesc": "Warm gradients",
+      "matchaCalm": "Matcha Calm",
+      "matchaCalmDesc": "Zen greens",
+      "starCollector": "Star Collector",
+      "starCollectorDesc": "Shiny badge",
+      "streakShield": "Streak Shield",
+      "streakShieldDesc": "Protect your streak"
+    }
   },
   "achievements": {
     "title": "Achievements",
@@ -176,6 +215,23 @@
     "haptics": "Haptic Feedback",
     "soundEffects": "Sound Effects",
     "dataExport": "Export Data",
-    "deleteAccount": "Delete Account"
+    "deleteAccount": "Delete Account",
+    "testHaptics": "Test vibration",
+    "testSounds": "Test sound",
+    "testNotifications": "Send test notification",
+    "hapticsOn": "Haptics enabled - feel the feedback!",
+    "hapticsOff": "Haptics disabled",
+    "soundsOn": "Sound effects enabled",
+    "soundsOff": "Sound effects disabled",
+    "notificationsOn": "Notifications enabled",
+    "notificationsOff": "Notifications disabled"
+  },
+  "validation": {
+    "usernameTaken": "This username is already taken. Please choose another.",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordWeak": "Password must have: 8+ characters, uppercase, number, special character",
+    "codeSent": "Code sent! Check your email (and spam folder).",
+    "verificationSuccess": "Email verified successfully!",
+    "verificationError": "Invalid code. Please try again."
   }
 }

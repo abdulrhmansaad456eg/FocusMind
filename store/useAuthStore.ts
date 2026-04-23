@@ -6,13 +6,16 @@ import {
   emailPasswordSignUp,
   mapFirebaseAuthError,
   signOutFirebase,
-  resendVerificationEmail,
   sendPasswordReset,
   googleSignIn,
-  checkEmailVerification,
+  checkUsernameExists,
+  verifyEmailCode,
+  resendVerificationCode,
+  markUserAsVerified,
 } from '../services/firebaseEmailAuth';
 import { getFirebaseAuth, isFirebaseConfigured } from '../services/firebase';
 import { type User as FirebaseUser } from 'firebase/auth';
+import { validatePassword, validateEmail, validateUsername } from '../utils/validation';
 
 export interface User {
   id: string;
@@ -44,12 +47,14 @@ interface AuthState {
   setOnboardingComplete: () => void;
   updateProfile: (updates: Partial<User>) => void;
   setUser: (user: User) => void;
-  resendVerification: () => Promise<void>;
-  checkVerificationStatus: () => Promise<boolean>;
   forgotPassword: (email: string) => Promise<void>;
   googleLogin: (idToken: string, accessToken: string) => Promise<boolean>;
   clearError: () => void;
   resetRateLimit: () => void;
+  verifyEmail: (code: string) => Promise<boolean>;
+  resendCode: () => Promise<void>;
+  checkUsernameAvailability: (username: string) => Promise<boolean>;
+  validateSignupInput: (username: string, email: string, password: string) => { isValid: boolean; error: string | null };
 }
 
 const TEST_ACCOUNT = {
@@ -241,12 +246,54 @@ export const useAuthStore = create<AuthState>()(
         return false;
       },
 
+      validateSignupInput: (username: string, email: string, password: string) => {
+        // Validate username
+        const usernameValidation = validateUsername(username);
+        if (!usernameValidation.isValid) {
+          return { isValid: false, error: usernameValidation.error || 'Invalid username' };
+        }
+
+        // Validate email
+        if (!validateEmail(email)) {
+          return { isValid: false, error: 'emailInvalid' };
+        }
+
+        // Validate password
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+          return { isValid: false, error: 'passwordWeak' };
+        }
+
+        return { isValid: true, error: null };
+      },
+
+      checkUsernameAvailability: async (username: string) => {
+        try {
+          return await checkUsernameExists(username);
+        } catch (err) {
+          console.error('Error checking username:', err);
+          return false;
+        }
+      },
+
       signup: async (email: string, password: string, username: string) => {
         set({ isLoading: true, error: null });
 
+        // Validate input
+        const validation = get().validateSignupInput(username, email, password);
+        if (!validation.isValid) {
+          set({ error: validation.error, isLoading: false });
+          return false;
+        }
+
         if (useFirebaseAuth()) {
           try {
-            const fbUser = await emailPasswordSignUp(email, password, username);
+            const { user: fbUser, verificationCode } = await emailPasswordSignUp(email, password, username);
+
+            // In a real app, you would send the code via email here
+            // For development, we'll show it in the UI
+            console.log('Verification code:', verificationCode);
+
             set({
               needsVerification: true,
               pendingVerificationEmail: email,
@@ -254,8 +301,12 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
             });
             return false; // Don't auto-login, wait for verification
-          } catch (err) {
-            set({ error: mapFirebaseAuthError(err), isLoading: false });
+          } catch (err: any) {
+            if (err.message === 'USERNAME_TAKEN') {
+              set({ error: 'usernameTaken', isLoading: false });
+            } else {
+              set({ error: mapFirebaseAuthError(err), isLoading: false });
+            }
             return false;
           }
         }
@@ -282,38 +333,43 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      resendVerification: async () => {
-        const { firebaseUser } = get();
-        if (firebaseUser) {
-          try {
-            await resendVerificationEmail(firebaseUser);
-          } catch (err) {
-            set({ error: mapFirebaseAuthError(err) });
+      verifyEmail: async (code: string) => {
+        const { pendingVerificationEmail, firebaseUser } = get();
+        if (!pendingVerificationEmail || !firebaseUser) {
+          return false;
+        }
+
+        try {
+          const isValid = await verifyEmailCode(pendingVerificationEmail, code);
+          if (isValid) {
+            await markUserAsVerified(firebaseUser.uid);
+            const user = mapFirebaseUser(firebaseUser);
+            set({
+              user,
+              needsVerification: false,
+              pendingVerificationEmail: null,
+              firebaseUser: null,
+            });
+            return true;
           }
+          set({ error: 'verificationError' });
+          return false;
+        } catch (err) {
+          set({ error: 'verificationError' });
+          return false;
         }
       },
 
-      checkVerificationStatus: async () => {
-        const { firebaseUser } = get();
-        if (firebaseUser) {
+      resendCode: async () => {
+        const { pendingVerificationEmail } = get();
+        if (pendingVerificationEmail) {
           try {
-            const isVerified = await checkEmailVerification(firebaseUser);
-            if (isVerified) {
-              const user = mapFirebaseUser(firebaseUser);
-              set({
-                user,
-                needsVerification: false,
-                pendingVerificationEmail: null,
-              });
-              return true;
-            }
-            return false;
+            const code = await resendVerificationCode(pendingVerificationEmail);
+            console.log('New verification code:', code);
           } catch (err) {
-            console.error('Failed to check verification:', err);
-            return false;
+            set({ error: 'Failed to resend code' });
           }
         }
-        return false;
       },
 
       forgotPassword: async (email: string) => {

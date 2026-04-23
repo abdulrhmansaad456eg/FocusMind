@@ -12,7 +12,7 @@ import { CoinDisplay } from '../../components/ui/CoinDisplay';
 import { changeLanguage } from '../../i18n/I18nProvider';
 import { supportedLanguages } from '../../i18n';
 import { themes } from '../../theme/themes';
-import { User, Globe, Palette, SignOut, CaretRight, Bell, Vibrate, SpeakerHigh } from 'phosphor-react-native';
+import { User, Globe, Palette, SignOut, CaretRight, Bell, Vibrate, SpeakerHigh, TestTube } from 'phosphor-react-native';
 import { useRouter } from 'expo-router';
 
 export default function Profile() {
@@ -22,13 +22,16 @@ export default function Profile() {
   const { user, logout } = useAuthStore();
   const { totalCoins, getTotalFocusHours } = useFocusStore();
   const { currentStreak, longestStreak } = useStreakStore();
-  const { 
-    hapticsEnabled, 
-    soundEffectsEnabled, 
+  const {
+    hapticsEnabled,
+    soundEffectsEnabled,
     streakWarningsEnabled,
-    toggleHaptics, 
+    toggleHaptics,
     toggleSoundEffects,
-    toggleStreakWarnings 
+    toggleStreakWarnings,
+    testHaptics,
+    testSound,
+    testNotification
   } = useSettingsStore();
 
   const totalHours = getTotalFocusHours();
@@ -203,6 +206,53 @@ export default function Profile() {
         onToggle={toggleStreakWarnings}
       />
 
+      {/* Test Buttons */}
+      <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+        {t('settings.title')} Tests
+      </Text>
+
+      <TouchableOpacity onPress={testHaptics}>
+        <Card style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <Vibrate size={24} color={theme.colors.primary} />
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+              {t('settings.testHaptics')}
+            </Text>
+          </View>
+          <Text style={[styles.testHint, { color: theme.colors.textSecondary }]}>
+            {hapticsEnabled ? t('settings.hapticsOn') : t('settings.hapticsOff')}
+          </Text>
+        </Card>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={testSound}>
+        <Card style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <SpeakerHigh size={24} color={theme.colors.primary} />
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+              {t('settings.testSounds')}
+            </Text>
+          </View>
+          <Text style={[styles.testHint, { color: theme.colors.textSecondary }]}>
+            {soundEffectsEnabled ? t('settings.soundsOn') : t('settings.soundsOff')}
+          </Text>
+        </Card>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={testNotification}>
+        <Card style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <Bell size={24} color={theme.colors.primary} />
+            <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+              {t('settings.testNotifications')}
+            </Text>
+          </View>
+          <Text style={[styles.testHint, { color: theme.colors.textSecondary }]}>
+            {streakWarningsEnabled ? t('settings.notificationsOn') : t('settings.notificationsOff')}
+          </Text>
+        </Card>
+      </TouchableOpacity>
+
       {/* Logout */}
       <View style={styles.logoutSection}>
         <Button
@@ -306,8 +356,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   logoutSection: {
-    padding: 16,
+    padding: 24,
     marginTop: 8,
+  },
+  testHint: {
+    fontSize: 12,
+    fontStyle: 'italic',
   },
   toggle: {
     width: 48,
