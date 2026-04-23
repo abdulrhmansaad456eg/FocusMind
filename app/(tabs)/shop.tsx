@@ -5,7 +5,7 @@ import { useShopStore, ShopItem } from '../../store/useShopStore';
 import { useFocusStore } from '../../store/useFocusStore';
 import { Card } from '../../components/ui/Card';
 import { CoinDisplay } from '../../components/ui/CoinDisplay';
-import { Ghost, Bell, Palette, Star, Shield, Check } from 'phosphor-react-native';
+import { Ghost, Bell, Palette, Star, Shield, Check, SpeakerHigh } from 'phosphor-react-native';
 
 export default function Shop() {
   const { theme } = useTheme();
@@ -17,7 +17,10 @@ export default function Shop() {
     const props = { size: 32, color: theme.colors.primary };
     switch (item.icon) {
       case 'Ghost': return <Ghost {...props} />;
-      case 'Bell': return <Bell {...props} />;
+      case 'Bell':
+        return <Bell {...props} />;
+      case 'SpeakerHigh':
+        return <SpeakerHigh {...props} />;
       case 'Palette': return <Palette {...props} />;
       case 'Star': return <Star {...props} />;
       case 'Shield': return <Shield {...props} />;
@@ -27,11 +30,16 @@ export default function Shop() {
 
   const getTypeLabel = (type: ShopItem['type']) => {
     switch (type) {
-      case 'remiSkin': return 'Remi Skin';
-      case 'timerSound': return 'Timer Sound';
-      case 'theme': return 'Theme';
-      case 'badge': return 'Badge';
-      case 'streakShield': return 'Streak Shield';
+      case 'remiSkin':
+        return t('shop.typeRemiSkin');
+      case 'timerSound':
+        return t('shop.typeTimerSound');
+      case 'theme':
+        return t('shop.typeTheme');
+      case 'badge':
+        return t('shop.typeBadge');
+      case 'streakShield':
+        return t('shop.typeStreakShield');
     }
   };
 
@@ -99,12 +107,10 @@ export default function Shop() {
                   equipped ? (
                     <View style={styles.ownedContainer}>
                       <Check size={16} color="#fff" weight="bold" />
-                      <Text style={styles.ownedText}>Equipped</Text>
+                      <Text style={styles.ownedText}>{t('shop.equipped')}</Text>
                     </View>
                   ) : (
-                    <Text style={[styles.buyButtonText, { color: theme.colors.text }]}>
-                      Equip
-                    </Text>
+                    <Text style={[styles.buyButtonText, { color: theme.colors.text }]}>{t('shop.equip')}</Text>
                   )
                 ) : (
                   <CoinDisplay amount={item.price} size="sm" />

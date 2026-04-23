@@ -35,7 +35,7 @@ const DEFAULT_ITEMS: ShopItem[] = [
   
   // Timer Sounds
   { id: 'sound_bell', name: 'Gentle Bell', description: 'Soft chime', price: 50, type: 'timerSound', icon: 'Bell', owned: false },
-  { id: 'sound_gong', name: 'Tibetan Gong', description: 'Deep resonance', price: 100, type: 'timerSound', icon: 'SpeakerHifi', owned: false },
+  { id: 'sound_gong', name: 'Tibetan Gong', description: 'Deep resonance', price: 100, type: 'timerSound', icon: 'SpeakerHigh', owned: false },
   
   // Themes
   { id: 'theme_sunset', name: 'Sunset Vibes', description: 'Warm gradients', price: 150, type: 'theme', icon: 'Palette', owned: false },

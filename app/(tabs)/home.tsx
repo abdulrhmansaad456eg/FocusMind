@@ -11,7 +11,7 @@ import { Button } from '../../components/ui/Button';
 import { useRouter } from 'expo-router';
 import { Target, Clock, TrendUp } from 'phosphor-react-native';
 import { Remi, RemiState } from '../../components/remi';
-import * as Haptics from 'expo-haptics';
+import { useHaptics } from '../../hooks/useHaptics';
 
 export default function Home() {
   const { theme } = useTheme();
@@ -20,6 +20,7 @@ export default function Home() {
   const { user } = useAuthStore();
   const { totalCoins, getTodaySessions, getTotalFocusHours } = useFocusStore();
   const { currentStreak } = useStreakStore();
+  const { impact } = useHaptics();
 
   const todaySessions = getTodaySessions();
   const totalHours = getTotalFocusHours();
@@ -38,7 +39,7 @@ export default function Home() {
   };
 
   const handleStartFocus = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void impact();
     router.push('/focus');
   };
 

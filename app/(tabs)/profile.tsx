@@ -46,8 +46,8 @@ export default function Profile() {
     setTheme(themeKeys[nextIndex]);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.replace('/(auth)/login');
   };
 

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       build_type:
-        description: 'Build type'
+        description: 'EAS profile (preview = APK, production = AAB)'
         required: true
         default: 'preview'
         type: choice
@@ -17,6 +17,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +28,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup Expo
+      - name: Setup Expo / EAS
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
@@ -36,22 +38,49 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Build APK
-        run: |
-          eas build --platform android --profile ${{ github.event.inputs.build_type || 'preview' }} --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - name: Typecheck
+        run: npm run lint
 
-      - name: Get Build URL
+      - name: EAS build (wait) and download artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROFILE="${{ github.event.inputs.build_type || 'preview' }}"
+          echo "Using EAS profile: $PROFILE"
+          eas build --platform android --profile "$PROFILE" --non-interactive --wait --json > build-output.json
+          echo "---- build JSON (truncated) ----"
+          head -c 4000 build-output.json || true
+          echo ""
+          APK_URL="$(jq -r '.[0].artifacts.buildUrl // .[0].artifacts.applicationArchiveUrl // empty' build-output.json)"
+          if [[ -z "$APK_URL" || "$APK_URL" == "null" ]]; then
+            echo "Could not read artifact URL from EAS output."
+            exit 1
+          fi
+          echo "Artifact URL resolved."
+          if [[ "$PROFILE" == "production" ]]; then
+            OUT="FocusMind.aab"
+          else
+            OUT="FocusMind.apk"
+          fi
+          curl -fL --retry 4 --retry-delay 8 --connect-timeout 30 -o "$OUT" "$APK_URL"
+          ls -la "$OUT"
+
+      - name: Resolve artifact file
+        id: artifact
+        shell: bash
+        run: |
+          if [ -f FocusMind.apk ]; then echo "file=FocusMind.apk" >> "$GITHUB_OUTPUT"
+          elif [ -f FocusMind.aab ]; then echo "file=FocusMind.aab" >> "$GITHUB_OUTPUT"
+          else echo "No FocusMind.apk or FocusMind.aab found"; ls -la; exit 1; fi
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: focusmind-android-${{ github.event.inputs.build_type || 'preview' }}-${{ github.run_number }}
+          path: ${{ steps.artifact.outputs.file }}
+
+      - name: Build summary
         if: success()
         run: |
-          echo "✅ APK Build Submitted to EAS!"
-          echo "Monitor build at: https://expo.dev/accounts/abdulrhmansaad456eg/projects/FocusMind/builds"
-          echo "Build Number: ${{ github.run_number }}"
-
-      - name: Get APK URL
-        if: success()
-        run: |
-          echo "✅ APK Build Complete!"
-          echo "Download the APK from the Artifacts section above."
-          echo "Build Number: ${{ github.run_number }}"
+          echo "Build finished. Download the APK/AAB from the workflow **Artifacts** section."
+          echo "Expo dashboard: https://expo.dev/accounts/abdulrhmansaad456eg/projects/FocusMind/builds"

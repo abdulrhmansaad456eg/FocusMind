@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../../i18n/I18nProvider';
 import { supportedLanguages } from '../../i18n';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useAchievementStore } from '../../store/useAchievementStore';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { useRouter } from 'expo-router';
@@ -32,8 +33,8 @@ export default function Tutorial() {
       // Update Remi state based on step
       updateRemiState(currentStep + 1);
     } else {
-      // Complete onboarding
       setOnboardingComplete();
+      useAchievementStore.getState().recordOnboardingComplete();
       router.replace('/(tabs)/home');
     }
   };
@@ -229,9 +230,15 @@ export default function Tutorial() {
               onPress={handleNext}
               size="lg"
             />
-            <TouchableOpacity onPress={handleNext} style={styles.skipButton}>
+            <TouchableOpacity
+              onPress={handleNext}
+              style={styles.skipButton}
+              accessibilityRole="button"
+              accessibilityLabel={t('onboarding.notificationsLaterA11y')}
+              testID="onboarding-notifications-later"
+            >
               <Text style={[styles.skipText, { color: theme.colors.textSecondary }]}>
-                Skip for now
+                {t('onboarding.notificationsLater')}
               </Text>
             </TouchableOpacity>
           </View>

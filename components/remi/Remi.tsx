@@ -6,37 +6,30 @@ import Animated, {
   withRepeat,
   withSequence,
   withDelay,
-  interpolate,
 } from 'react-native-reanimated';
 import { useEffect, useCallback } from 'react';
-import { RemiState, remiStateConfigs, remiEyeConfigs, getRandomPun } from './RemiStates';
+import { RemiState, remiStateConfigs, remiEyeConfigs } from './RemiStates';
 import { useTheme } from '../../theme/ThemeProvider';
 
 interface RemiProps {
   state: RemiState;
   size?: number;
-  onStateChange?: (state: RemiState) => void;
 }
 
-// Animated values for body transformations
-const scale = useSharedValue(1);
-const translateY = useSharedValue(0);
-const rotate = useSharedValue(0);
-
-// Animated values for eyes
-const leftEyeScaleY = useSharedValue(1);
-const rightEyeScaleY = useSharedValue(1);
-const leftEyeTranslateX = useSharedValue(0);
-const rightEyeTranslateX = useSharedValue(0);
-
-// Sleep Z's animation
-const z1TranslateY = useSharedValue(0);
-const z1Opacity = useSharedValue(0);
-const z2TranslateY = useSharedValue(0);
-const z2Opacity = useSharedValue(0);
-
-export function Remi({ state, size = 120, onStateChange }: RemiProps) {
+export function Remi({ state, size = 120 }: RemiProps) {
   const { theme } = useTheme();
+
+  const scale = useSharedValue(1);
+  const translateY = useSharedValue(0);
+  const rotate = useSharedValue(0);
+  const leftEyeScaleY = useSharedValue(1);
+  const rightEyeScaleY = useSharedValue(1);
+  const leftEyeTranslateX = useSharedValue(0);
+  const rightEyeTranslateX = useSharedValue(0);
+  const z1TranslateY = useSharedValue(0);
+  const z1Opacity = useSharedValue(0);
+  const z2TranslateY = useSharedValue(0);
+  const z2Opacity = useSharedValue(0);
 
   const updateAnimation = useCallback(() => {
     const config = remiStateConfigs[state];
@@ -129,6 +122,7 @@ export function Remi({ state, size = 120, onStateChange }: RemiProps) {
         true
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- shared values are stable; animations keyed by `state` only
   }, [state]);
 
   useEffect(() => {
@@ -330,5 +324,3 @@ const styles = StyleSheet.create({
     color: '#888',
   },
 });
-
-export { RemiState, getRandomPun };

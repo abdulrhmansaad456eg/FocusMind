@@ -3,7 +3,11 @@ import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import { useFocusStore } from '../../store/useFocusStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useStreakStore } from '../../store/useStreakStore';
+import { useAchievementStore } from '../../store/useAchievementStore';
 import { useRouter } from 'expo-router';
+import { syncCompletedSessionRemote } from '../../services/sessionRemote';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { CoinDisplay } from '../../components/ui/CoinDisplay';
@@ -15,6 +19,7 @@ export default function SessionComplete() {
   const { t } = useTranslation();
   const router = useRouter();
   const { currentSession, completeSession } = useFocusStore();
+  const { user } = useAuthStore();
 
   const [rating, setRating] = useState(0);
   const [note, setNote] = useState('');
@@ -29,7 +34,21 @@ export default function SessionComplete() {
   }, []);
 
   const handleComplete = () => {
-    completeSession(rating, note);
+    const completed = completeSession(rating, note);
+    if (completed) {
+      useStreakStore.getState().checkAndUpdateStreak(true);
+      const focus = useFocusStore.getState();
+      const streak = useStreakStore.getState().currentStreak;
+      useAchievementStore.getState().recordSessionCompleted(completed, {
+        streak,
+        totalHours: focus.getTotalFocusHours(),
+        sessionsToday: focus.getTodaySessions().length,
+        totalSessions: focus.sessions.length,
+      });
+      if (user?.id) {
+        void syncCompletedSessionRemote(user.id, completed);
+      }
+    }
     router.replace('/(tabs)/home');
   };
 
@@ -93,7 +112,7 @@ export default function SessionComplete() {
             borderColor: theme.colors.border,
           },
         ]}
-        placeholder="How did it go? (optional)"
+        placeholder={t('focus.notePlaceholder')}
         placeholderTextColor={theme.colors.textSecondary}
         value={note}
         onChangeText={setNote}
@@ -108,7 +127,7 @@ export default function SessionComplete() {
       {/* Complete Button */}
       <View style={styles.buttonContainer}>
         <Button
-          title="Done"
+          title={t('common.done')}
           onPress={handleComplete}
           size="lg"
           style={styles.doneButton}

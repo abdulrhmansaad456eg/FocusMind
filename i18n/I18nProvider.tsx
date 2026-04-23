@@ -3,6 +3,7 @@ import { I18nextProvider } from 'react-i18next';
 import { I18nManager } from 'react-native';
 import i18n from './index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAchievementStore } from '../store/useAchievementStore';
 
 const LANGUAGE_KEY = '@focusmind_language';
 
@@ -44,9 +45,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
 export async function changeLanguage(lang: string) {
   try {
+    const previous = i18n.language;
     await i18n.changeLanguage(lang);
     await AsyncStorage.setItem(LANGUAGE_KEY, lang);
-    
+    if (previous !== lang) {
+      useAchievementStore.getState().recordLanguageSwitch();
+    }
+
     // Handle RTL
     const isRTL = lang === 'ar';
     if (isRTL !== I18nManager.isRTL) {

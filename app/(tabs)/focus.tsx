@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import { useState } from 'react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
@@ -7,14 +14,15 @@ import { useSettingsStore } from '../../store/useSettingsStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { useRouter } from 'expo-router';
-import { Timer, Brain, Lightning, Moon, Coffee, Play } from 'phosphor-react-native';
+import { Timer, Brain, Lightning, Moon } from 'phosphor-react-native';
+import { AmbientMixer } from '../../components/focus/AmbientMixer';
 
 type SessionType = 'pomodoro' | 'deepWork' | 'quickBurst' | 'windDown';
 
 interface SessionOption {
   type: SessionType;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
   icon: typeof Timer;
   durations: number[];
   defaultDuration: number;
@@ -23,32 +31,32 @@ interface SessionOption {
 const sessionOptions: SessionOption[] = [
   {
     type: 'pomodoro',
-    title: 'Pomodoro',
-    description: '25 min focus + 5 min break',
+    titleKey: 'focus.pomodoro',
+    descKey: 'focus.pomodoroHelp',
     icon: Timer,
     durations: [25, 50],
     defaultDuration: 25,
   },
   {
     type: 'deepWork',
-    title: 'Deep Work',
-    description: 'Uninterrupted focus session',
+    titleKey: 'focus.deepWork',
+    descKey: 'focus.deepWorkHelp',
     icon: Brain,
     durations: [60, 90, 120],
     defaultDuration: 60,
   },
   {
     type: 'quickBurst',
-    title: 'Quick Burst',
-    description: 'Short focused sprint',
+    titleKey: 'focus.quickBurst',
+    descKey: 'focus.quickBurstHelp',
     icon: Lightning,
     durations: [5, 10, 15],
     defaultDuration: 10,
   },
   {
     type: 'windDown',
-    title: 'Wind Down',
-    description: 'End of day reflection',
+    titleKey: 'focus.windDown',
+    descKey: 'focus.windDownHelp',
     icon: Moon,
     durations: [10, 15, 20],
     defaultDuration: 10,
@@ -64,15 +72,16 @@ export default function Focus() {
 
   const [selectedType, setSelectedType] = useState<SessionType>(defaultSessionType);
   const [sessionName, setSessionName] = useState('');
+  const [ambientIds, setAmbientIds] = useState<string[]>([]);
   const [selectedDuration, setSelectedDuration] = useState(
-    sessionOptions.find(s => s.type === defaultSessionType)?.defaultDuration || 25
+    sessionOptions.find((s) => s.type === defaultSessionType)?.defaultDuration || 25,
   );
 
-  const currentOption = sessionOptions.find(s => s.type === selectedType) || sessionOptions[0];
+  const currentOption = sessionOptions.find((s) => s.type === selectedType) || sessionOptions[0];
 
   const handleStartSession = () => {
-    const name = sessionName.trim() || 'Focus Session';
-    startSession(name, selectedDuration, selectedType);
+    const name = sessionName.trim() || t('focus.startSession');
+    startSession(name, selectedDuration, selectedType, ambientIds);
     router.push('/session/active');
   };
 
@@ -82,6 +91,9 @@ export default function Focus() {
 
     return (
       <TouchableOpacity
+        testID={`session-type-${option.type}`}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
         onPress={() => {
           setSelectedType(option.type);
           setSelectedDuration(option.defaultDuration);
@@ -101,44 +113,61 @@ export default function Focus() {
           weight={isSelected ? 'fill' : 'regular'}
         />
         <Text style={[styles.typeTitle, { color: isSelected ? theme.colors.primary : theme.colors.text }]}>
-          {option.title}
+          {t(option.titleKey)}
         </Text>
-        <Text style={[styles.typeDesc, { color: theme.colors.textSecondary }]}>
-          {option.description}
-        </Text>
+        <Text style={[styles.typeDesc, { color: theme.colors.textSecondary }]}>{t(option.descKey)}</Text>
       </TouchableOpacity>
     );
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      testID="focus-screen"
+    >
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.colors.text }]}>
-          {t('focus.startSession')}
-        </Text>
+        <Text style={[styles.title, { color: theme.colors.text }]}>{t('focus.startSession')}</Text>
       </View>
 
-      {/* Session Type Selection */}
+      <Card style={styles.nameCard}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t('focus.sessionName')}</Text>
+        <TextInput
+          value={sessionName}
+          onChangeText={setSessionName}
+          placeholder={t('focus.sessionName')}
+          placeholderTextColor={theme.colors.textSecondary}
+          style={[
+            styles.nameInput,
+            {
+              color: theme.colors.text,
+              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.surface,
+            },
+          ]}
+          testID="focus-session-name-input"
+          accessibilityLabel={t('focus.sessionName')}
+        />
+      </Card>
+
       <View style={styles.typeGrid}>
-        {sessionOptions.map(option => (
+        {sessionOptions.map((option) => (
           <SessionTypeCard key={option.type} option={option} />
         ))}
       </View>
 
-      {/* Duration Selection */}
       <Card style={styles.durationCard}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-          Duration
-        </Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t('focus.duration')}</Text>
         <View style={styles.durationRow}>
-          {currentOption.durations.map(duration => (
+          {currentOption.durations.map((duration) => (
             <TouchableOpacity
               key={duration}
+              testID={`focus-duration-${duration}`}
               onPress={() => setSelectedDuration(duration)}
               style={[
                 styles.durationButton,
                 {
-                  backgroundColor: selectedDuration === duration ? theme.colors.primary : theme.colors.background,
+                  backgroundColor:
+                    selectedDuration === duration ? theme.colors.primary : theme.colors.background,
                 },
               ]}
             >
@@ -155,16 +184,18 @@ export default function Focus() {
         </View>
       </Card>
 
-      {/* Start Button */}
+      <AmbientMixer mode="select" selectedIds={ambientIds} onChange={setAmbientIds} testID="focus-ambient" />
+
       <View style={styles.startSection}>
         <Button
-          title="Start Session"
+          title={t('focus.startSessionCta')}
           onPress={handleStartSession}
           size="lg"
           style={styles.startButton}
+          testID="focus-start-button"
         />
         <Text style={[styles.durationDisplay, { color: theme.colors.textSecondary }]}>
-          {selectedDuration} minutes of focused work
+          {t('focus.minutesOfFocus', { count: selectedDuration })}
         </Text>
       </View>
     </ScrollView>
@@ -182,6 +213,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+  },
+  nameCard: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  nameInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
   },
   typeGrid: {
     flexDirection: 'row',
@@ -229,6 +271,7 @@ const styles = StyleSheet.create({
   startSection: {
     padding: 16,
     alignItems: 'center',
+    paddingBottom: 40,
   },
   startButton: {
     width: '100%',

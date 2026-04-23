@@ -1,13 +1,23 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, AppState, type AppStateStatus } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
 import { useTheme } from '../../theme/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 import { useFocusStore } from '../../store/useFocusStore';
 import { useRouter } from 'expo-router';
 import { Pause, Play, X, Check } from 'phosphor-react-native';
+import { useTimer } from '../../hooks/useTimer';
+import { AmbientMixer } from '../../components/focus/AmbientMixer';
+import { Remi, RemiState } from '../../components/remi';
 
 export default function ActiveSession() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const router = useRouter();
+  const appState = useRef<AppStateStatus>(AppState.currentState);
+  const [remiVisible, setRemiVisible] = useState(false);
+  const [remiState, setRemiState] = useState<RemiState>('idle');
+  const [backgroundWarn, setBackgroundWarn] = useState(false);
+
   const {
     currentSession,
     isActive,
@@ -15,38 +25,40 @@ export default function ActiveSession() {
     pauseSession,
     resumeSession,
     cancelSession,
-    completeSession,
-    tick,
   } = useFocusStore();
 
-  // Timer tick effect
+  useTimer(Boolean(currentSession) && isActive);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      tick();
-    }, 1000);
+    const sub = AppState.addEventListener('change', (next) => {
+      if (
+        appState.current === 'active' &&
+        (next === 'inactive' || next === 'background') &&
+        currentSession &&
+        isActive
+      ) {
+        setBackgroundWarn(true);
+      }
+      appState.current = next;
+    });
+    return () => sub.remove();
+  }, [currentSession, isActive]);
 
-    return () => clearInterval(interval);
-  }, [tick]);
-
-  // Auto-complete when timer reaches 0
   useEffect(() => {
     if (timeRemaining === 0 && currentSession) {
       router.replace('/session/complete');
     }
-  }, [timeRemaining, currentSession]);
+  }, [timeRemaining, currentSession, router]);
 
-  // Handle cancel
   const handleCancel = () => {
     cancelSession();
     router.back();
   };
 
-  // Handle manual complete
   const handleComplete = () => {
     router.replace('/session/complete');
   };
 
-  // Format time as MM:SS
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -59,39 +71,64 @@ export default function ActiveSession() {
 
   if (!currentSession) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <Text style={[styles.text, { color: theme.colors.text }]}>No active session</Text>
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        testID="active-no-session"
+      >
+        <Text style={[styles.text, { color: theme.colors.text }]}>{t('focus.noActiveSession')}</Text>
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      {/* Header */}
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]} testID="active-session">
+      <AmbientMixer mode="playback" selectedIds={currentSession.ambientIds ?? []} />
+
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleCancel} style={styles.closeButton}>
+        <TouchableOpacity
+          onPress={handleCancel}
+          style={styles.closeButton}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.cancel')}
+          testID="active-close"
+        >
           <X size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
       </View>
 
-      {/* Session Name */}
-      <Text style={[styles.sessionName, { color: theme.colors.textSecondary }]}>
-        {currentSession.name}
-      </Text>
+      {backgroundWarn && (
+        <View style={[styles.banner, { backgroundColor: theme.colors.warning + '33' }]}>
+          <Text style={[styles.bannerText, { color: theme.colors.text }]}>{t('focus.backgroundHint')}</Text>
+        </View>
+      )}
 
-      {/* Timer Display */}
-      <View style={styles.timerContainer}>
-        <Text style={[styles.timer, { color: theme.colors.text }]}>
-          {formatTime(timeRemaining)}
-        </Text>
-      </View>
+      <Text style={[styles.sessionName, { color: theme.colors.textSecondary }]}>{currentSession.name}</Text>
 
-      {/* Progress Bar */}
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={() => {
+          setRemiVisible((v) => !v);
+          setRemiState(isActive ? 'idle' : 'encouraging');
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={t('focus.tapForRemi')}
+        testID="active-timer-area"
+        style={styles.timerContainer}
+      >
+        <Text style={[styles.timer, { color: theme.colors.text }]}>{formatTime(timeRemaining)}</Text>
+      </TouchableOpacity>
+
+      {remiVisible && (
+        <View style={styles.remiCorner} testID="active-remi">
+          <Remi state={remiState} size={88} />
+        </View>
+      )}
+
       <View style={[styles.progressBar, { backgroundColor: theme.colors.border }]}>
         <View
           style={[
             styles.progressFill,
-            { 
+            {
               backgroundColor: theme.colors.primary,
               width: `${progress}%`,
             },
@@ -99,11 +136,13 @@ export default function ActiveSession() {
         />
       </View>
 
-      {/* Controls */}
       <View style={styles.controls}>
         <TouchableOpacity
           onPress={isActive ? pauseSession : resumeSession}
           style={[styles.controlButton, { backgroundColor: theme.colors.primary }]}
+          accessibilityRole="button"
+          accessibilityLabel={isActive ? t('focus.sessionActive') : t('focus.sessionPaused')}
+          testID="active-play-pause"
         >
           {isActive ? (
             <Pause size={32} color="#fff" weight="fill" />
@@ -115,13 +154,16 @@ export default function ActiveSession() {
         <TouchableOpacity
           onPress={handleComplete}
           style={[styles.completeButton, { backgroundColor: theme.colors.success }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.done')}
+          testID="active-complete"
         >
           <Check size={32} color="#fff" weight="bold" />
         </TouchableOpacity>
       </View>
 
       <Text style={[styles.hint, { color: theme.colors.textMuted }]}>
-        {isActive ? 'Session in progress' : 'Session paused'}
+        {isActive ? t('focus.sessionActive') : t('focus.sessionPaused')}
       </Text>
     </View>
   );
@@ -139,6 +181,10 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 8,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sessionName: {
     fontSize: 18,
@@ -154,6 +200,11 @@ const styles = StyleSheet.create({
     fontSize: 72,
     fontWeight: '200',
     fontVariant: ['tabular-nums'],
+  },
+  remiCorner: {
+    position: 'absolute',
+    bottom: 140,
+    right: 24,
   },
   progressBar: {
     height: 8,
@@ -193,5 +244,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 48,
+  },
+  banner: {
+    marginTop: 12,
+    padding: 10,
+    borderRadius: 12,
+  },
+  bannerText: {
+    textAlign: 'center',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });

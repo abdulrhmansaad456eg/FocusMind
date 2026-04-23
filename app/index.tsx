@@ -5,39 +5,46 @@ import { useAuthStore } from '../store/useAuthStore';
 
 export default function SplashScreen() {
   const router = useRouter();
-  const { setUser } = useAuthStore();
   const [error, setError] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(() => useAuthStore.persist.hasHydrated());
 
   useEffect(() => {
-    try {
-      // Auto-login as guest
-      setUser({
-        id: 'guest',
-        email: 'guest@focusmind.app',
-        username: 'Guest',
-        avatarColor: '#3b82f6',
-      });
-
-      // Navigate to home after 2 seconds
-      const timer = setTimeout(() => {
-        try {
-          router.replace('/(tabs)/home');
-        } catch (navError) {
-          console.error('Navigation error:', navError);
-          setError('Navigation failed');
-        }
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    } catch (err) {
-      console.error('Splash init error:', err);
-      setError('Failed to initialize');
+    if (hydrated) {
+      return undefined;
     }
-  }, []);
+    const unsub = useAuthStore.persist.onFinishHydration(() => setHydrated(true));
+    return unsub;
+  }, [hydrated]);
+
+  useEffect(() => {
+    if (!hydrated || error) {
+      return undefined;
+    }
+
+    const timer = setTimeout(() => {
+      try {
+        const { hasCompletedOnboarding } = useAuthStore.getState();
+        if (!hasCompletedOnboarding) {
+          router.replace('/(onboarding)/tutorial');
+        } else {
+          router.replace('/(tabs)/home');
+        }
+      } catch (navError) {
+        console.error('Navigation error:', navError);
+        setError('Navigation failed');
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [hydrated, error, router]);
 
   if (error) {
     return (
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+        accessibilityLabel="Startup error"
+        testID="splash-error"
+      >
         <Text style={styles.logo}>⚠️</Text>
         <Text style={styles.title}>Oops!</Text>
         <Text style={styles.welcome}>{error}</Text>
@@ -47,7 +54,11 @@ export default function SplashScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      accessibilityLabel="FocusMind loading"
+      testID="splash-loading"
+    >
       <View style={styles.logoContainer}>
         <Text style={styles.logo}>🧠</Text>
       </View>
