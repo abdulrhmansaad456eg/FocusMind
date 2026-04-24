@@ -11,6 +11,7 @@
     "username": "Username",
     "login": "Sign In",
     "signup": "Create Account",
+    "signupSendCode": "Send Verification Code",
     "noAccount": "Don't have an account? Sign up",
     "hasAccount": "Already have an account? Sign in",
     "continueWithGoogle": "Continue with Google",

@@ -5,6 +5,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../store/useAuthStore';
 import { validatePassword, validateEmail, validateUsername } from '../../utils/validation';
+import { isFirebaseConfigured } from '../../services/firebase';
 
 export default function Signup() {
   const { theme } = useTheme();
@@ -220,6 +221,15 @@ export default function Signup() {
         )}
       </View>
 
+      {/* Firebase Not Configured Warning */}
+      {!isFirebaseConfigured() && (
+        <View style={[styles.warningBox, { backgroundColor: '#fef3c7', borderColor: '#f59e0b' }]}>
+          <Text style={[styles.warningText, { color: '#92400e' }]}>
+            Firebase not configured. Please check your .env file and restart the app.
+          </Text>
+        </View>
+      )}
+
       <TouchableOpacity
         style={[styles.button, { backgroundColor: theme.colors.primary }]}
         onPress={handleSignup}
@@ -227,7 +237,7 @@ export default function Signup() {
         testID="signup-button"
       >
         <Text style={styles.buttonText}>
-          {isLoading ? t('common.loading') : t('auth.signup')}
+          {isLoading ? t('common.loading') : t('auth.signupSendCode')}
         </Text>
       </TouchableOpacity>
 
@@ -343,5 +353,15 @@ const styles = StyleSheet.create({
   },
   requirementText: {
     fontSize: 13,
+  },
+  warningBox: {
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+  },
+  warningText: {
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
